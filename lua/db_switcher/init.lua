@@ -22,7 +22,7 @@ local state = {
 }
 
 local function notify(message, level)
-	vim.notify(message, level, { title = "DB Picker" })
+	vim.notify(message, level, { title = "DB Switcher" })
 end
 
 local function load_dbs(source)
@@ -76,7 +76,11 @@ local function pick()
 			sorter = conf.generic_sorter({}),
 			attach_mappings = function(prompt_bufnr)
 				actions.select_default:replace(function()
-					local name = action_state.get_selected_entry()[1]
+					local entry = action_state.get_selected_entry()
+					if not entry then
+						return
+					end
+					local name = entry[1]
 					actions.close(prompt_bufnr)
 					vim.g.db = state.dbs[name]
 					vim.g.db_name = name
