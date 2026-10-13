@@ -2,6 +2,7 @@ local M = {}
 
 local defaults = {
 	source = "config.private_dbs",
+	default = nil,
 	command = "DBS",
 	reload_command = "DBSReload",
 	picker = {
@@ -113,7 +114,18 @@ function M.setup(opts)
 		return
 	end
 
-	M.reload()
+	if not M.reload() then
+		return
+	end
+
+	if state.opts.default ~= nil then
+		if type(state.opts.default) ~= "string" or not state.dbs[state.opts.default] then
+			notify(("Default database `%s` was not found"):format(tostring(state.opts.default)), vim.log.levels.ERROR)
+			return
+		end
+		vim.g.db = state.dbs[state.opts.default]
+		vim.g.db_name = state.opts.default
+	end
 
 	if vim.fn.exists(":" .. state.opts.command) == 2 then
 		vim.api.nvim_del_user_command(state.opts.command)

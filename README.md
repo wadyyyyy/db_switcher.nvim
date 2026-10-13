@@ -14,9 +14,13 @@ commands such as `:%DB`.
   dependencies = { "nvim-telescope/telescope.nvim" },
   opts = {
     source = "config.private_dbs",
+    default = "local_db",
   },
 }
 ```
+
+`default` is optional. When set, the matching connection is assigned to
+`vim.g.db` during startup, so `:%DB` can be used immediately.
 
 The source module must return a table mapping names to URLs:
 
@@ -66,6 +70,7 @@ opts = {
   dependencies = { "nvim-telescope/telescope.nvim" },
   opts = {
     source = "config.private_dbs",
+    default = "local_db",
   },
 }
 ```
