@@ -1,19 +1,10 @@
 # db_switcher.nvim
 
-Choose and switch between `vim-dadbod` connections by name with [Telescope](https://github.com/nvim-telescope/telescope.nvim).
+Choose and switch between `vim-dadbod` connections by name.
 
 `db_switcher.nvim` loads a user-provided Lua module containing database URLs,
 publishes the connections as `vim.g.dbs` for `vim-dadbod-ui`, and sets the
 selected URL as `vim.g.db` for regular Dadbod commands.
-
-## Requirements
-
-- Neovim `>= 0.11.7`, built with LuaJIT
-- [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
-- [plenary.nvim](https://github.com/nvim-lua/plenary.nvim), installed by Telescope
-
-The plugin does not require `vim-dadbod` or `vim-dadbod-ui` to load, but those
-plugins consume `vim.g.db` and `vim.g.dbs` respectively.
 
 ## Installation
 
@@ -22,9 +13,6 @@ plugins consume `vim.g.db` and `vim.g.dbs` respectively.
 ```lua
 {
   "wadyyyyy/db_switcher.nvim",
-  dependencies = {
-    "nvim-telescope/telescope.nvim",
-  },
   opts = {
     source = "config.private_dbs",
     default = "local_db",
@@ -40,8 +28,6 @@ Neovim `>= 0.12` includes the native `vim.pack` API:
 
 ```lua
 vim.pack.add({
-  { src = "https://github.com/nvim-lua/plenary.nvim" },
-  { src = "https://github.com/nvim-telescope/telescope.nvim" },
   { src = "https://github.com/wadyyyyy/db_switcher.nvim" },
 })
 
@@ -50,8 +36,6 @@ require("db_switcher").setup({
   default = "local_db",
 })
 ```
-
-Configure Telescope as usual if you need custom Telescope behavior.
 
 ## Configuration
 
@@ -79,15 +63,6 @@ require("db_switcher").setup({
   default = "local_db",
   command = "DBS",
   reload_command = "DBSReload",
-  picker = {
-    layout_strategy = "center",
-    layout_config = {
-      width = 0.35,
-      height = 0.25,
-      prompt_position = "top",
-    },
-    previewer = false,
-  },
 })
 ```
 
@@ -97,7 +72,6 @@ require("db_switcher").setup({
 | `default` | `nil` | Name assigned to `vim.g.db` during setup |
 | `command` | `"DBS"` | Command that opens the connection picker |
 | `reload_command` | `"DBSReload"` | Command that reloads the source module |
-| `picker` | compact center layout | Telescope picker options |
 
 `default` must match a key in the source table. If it does not, setup reports
 an error instead of silently selecting another connection.

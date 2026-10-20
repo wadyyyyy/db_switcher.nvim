@@ -5,15 +5,6 @@ local defaults = {
 	default = nil,
 	command = "DBS",
 	reload_command = "DBSReload",
-	picker = {
-		layout_strategy = "center",
-		layout_config = {
-			width = 0.35,
-			height = 0.25,
-			prompt_position = "top",
-		},
-		previewer = false,
-	},
 }
 
 local state = {
@@ -55,41 +46,20 @@ local function load_dbs(source)
 end
 
 local function pick()
-	local ok, pickers = pcall(require, "telescope.pickers")
-	if not ok then
-		notify("Telescope is required to choose a database", vim.log.levels.ERROR)
-		return
-	end
-
-	local finders = require("telescope.finders")
-	local conf = require("telescope.config").values
-	local actions = require("telescope.actions")
-	local action_state = require("telescope.actions.state")
-
 	local names = vim.tbl_keys(state.dbs)
 	table.sort(names)
 
-	pickers
-		.new(vim.deepcopy(state.opts.picker), {
-			prompt_title = "Databases",
-			finder = finders.new_table({ results = names }),
-			sorter = conf.generic_sorter({}),
-			attach_mappings = function(prompt_bufnr)
-				actions.select_default:replace(function()
-					local entry = action_state.get_selected_entry()
-					if not entry then
-						return
-					end
-					local name = entry[1]
-					actions.close(prompt_bufnr)
-					vim.g.db = state.dbs[name]
-					vim.g.db_name = name
-					notify(("Selected database: %s"):format(name), vim.log.levels.INFO)
-				end)
-				return true
-			end,
-		})
-		:find()
+	vim.ui.select(names, {
+		prompt = "Databases:",
+	}, function(name)
+		if not name then
+			return
+		end
+
+		vim.g.db = state.dbs[name]
+		vim.g.db_name = name
+		notify(("Selected database: %s"):format(name), vim.log.levels.INFO)
+	end)
 end
 
 function M.reload()
